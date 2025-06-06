@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absa Data Asset Documentation Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E06D1E 0%, #F52D28 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #940527 0%, #4C0A26 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .user-section {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-input input {
+            padding: 8px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .user-indicator {
+            background: #940527;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #940527;
+            border-bottom-color: #940527;
+            background: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .controls {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        input[type="text"], select, textarea {
+            padding: 8px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #F52D28;
+            box-shadow: 0 0 0 3px rgba(245, 45, 40, 0.1);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #F52D28 0%, #940527 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: flex-end;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 45, 40, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .environment-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .env-tab {
+            padding: 10px 20px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .env-tab.active {
+            background: linear-gradient(135deg, #F52D28 0%, #940527 100%);
+            color: white;
+        }
+
+        .dashboard {
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .swim-lane-container {
+            display: grid;
+            grid-template-columns: 200px repeat(3, 1fr);
+            gap: 2px;
+            background: #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+            min-width: 800px;
+        }
+
+        .header-cell {
+            background: linear-gradient(135deg, #940527 0%, #4C0A26 100%);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .workstream-header {
+            background: linear-gradient(135deg, #4C0A26 0%, #940527 100%);
+            /* writing-mode: vertical-rl; */
+            text-orientation: mixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .data-stage-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .stage-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .raw-icon { background: #F52D28; }
+        .standardized-icon { background: #E06D1E; }
+        .curated-icon { background: #940527; }
+
+        .swim-lane {
+            background: white;
+            padding: 20px;
+            min-height: 150px;
+            position: relative;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .swim-lane:hover {
+            background: #f8f9fa;
+            border-left-color: #F52D28;
+        }
+
+        .swim-lane.raw { border-left-color: #F52D28; }
+        .swim-lane.standardized { border-left-color: #E06D1E; }
+        .swim-lane.curated { border-left-color: #940527; }
+
+        .workstream-label {
+            background: linear-gradient(135deg, #F52D28 0%, #940527 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1em;
+            /* writing-mode: vertical-rl; */
+            text-orientation: mixed;
+        }
+
+        .data-asset {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .data-asset:hover {
+            border-style: solid;
+            border-color: #F52D28;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .data-asset.completed {
+            background: #d4edda;
+            border-color: #940527;
+            border-style: solid;
+        }
+
+        .asset-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .asset-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .asset-name {
+            font-weight: 600;
+            color: #4C0A26;
+            flex: 1;
+        }
+
+        .asset-details {
+            font-size: 0.9em;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        .asset-meta {
+            font-size: 0.8em;
+            color: #adb5bd;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .add-asset-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #E06D1E 0%, #F52D28 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .add-asset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(224, 109, 30, 0.4);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #4C0A26;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .lakehouse-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #940527;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .data-table {
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #4C0A26;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-complete {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .instructions {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .instructions h3 {
+            color: #4C0A26;
+            margin-bottom: 15px;
+        }
+
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .instruction-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #F52D28;
+        }
+
+        .instruction-card h4 {
+            color: #4C0A26;
+            margin-bottom: 10px;
+        }
+
+        .instruction-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instruction-card li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .instruction-card li:before {
+            content: "•";
+            color: #F52D28;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .export-controls {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .auto-save-indicator {
+            margin-left: auto;
+            color: #28a745;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .auto-save-indicator.saving {
+            color: #ffc107;
+        }
+
+        .auto-save-indicator.error {
+            color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .swim-lane-container {
+                grid-template-columns: 150px repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Absa Data Asset Documentation Dashboard</h1>
+            <p>Collaborative platform for tracking data assets across Raw, Standardized, and Curated states</p>
+        </div>
+
+        <div class="user-section">
+            <div class="user-input">
+                <label for="userNameInput">Your Name:</label>
+                <input type="text" id="userNameInput" placeholder="Enter your name" onchange="setCurrentUser()">
+            </div>
+            <div class="user-indicator" id="userIndicator" style="display: none;">
+                Editing as: <span id="currentUserName"></span>
+            </div>
+            <div class="auto-save-indicator" id="autoSaveIndicator">
+                ✓ Data automatically saved
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('dashboard')">Dashboard View</button>
+            <button class="tab" onclick="switchTab('table')">Data Table</button>
+            <button class="tab" onclick="switchTab('instructions')">Instructions & Guide</button>
+        </div>
+
+        <div id="dashboardTab" class="tab-content active">
+            <div class="controls">
+                <div class="control-group">
+                    <label>Workstream/Application</label>
+                    <input type="text" id="workstreamInput" placeholder="Enter workstream name">
+                </div>
+                <div class="control-group">
+                    <label>Asset Name</label>
+                    <input type="text" id="assetNameInput" placeholder="Enter asset name">
+                </div>
+                <div class="control-group">
+                    <label>Data Stage</label>
+                    <select id="dataStageSelect">
+                        <option value="raw">Raw</option>
+                        <option value="standardized">Standardized</option>
+                        <option value="curated">Curated</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Description</label>
+                    <textarea id="descriptionInput" placeholder="Detailed asset description" rows="2"></textarea>
+                </div>
+                <button class="btn" onclick="addDataAsset()">Add Asset</button>
+            </div>
+
+            <div class="environment-selector">
+                <button class="env-tab active" onclick="switchEnvironment('nonprod')">Non-Prod</button>
+                <button class="env-tab" onclick="switchEnvironment('aws')">AWS Cloud</button>
+            </div>
+
+            <div class="dashboard">
+                <div class="swim-lane-container" id="swimLaneContainer">
+                    <div class="header-cell workstream-header">Workstream / Application</div>
+                    <div class="header-cell data-stage-header">
+                        <div class="stage-icon raw-icon"></div>
+                        Raw Data
+                    </div>
+                    <div class="header-cell data-stage-header">
+                        <div class="stage-icon standardized-icon"></div>
+                        Standardized Data
+                    </div>
+                    <div class="header-cell data-stage-header">
+                        <div class="stage-icon curated-icon"></div>
+                        Curated Data
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalAssets">0</div>
+                    <div class="stat-label">Total Assets</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completedAssets">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="workstreamsCount">0</div>
+                    <div class="stat-label">Workstreams</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="progressPercent">0%</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tableTab" class="tab-content">
+            <div class="data-table">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Data Assets Summary Table</h3>
+                    <div>
+                        <button class="btn btn-secondary" onclick="exportToCSV()">Export CSV</button>
+                        <button class="btn" onclick="exportToJSON()">Export JSON</button>
+                    </div>
+                </div>
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Environment</th>
+                            <th>Workstream</th>
+                            <th>Asset Name</th>
+                            <th>Data Stage</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Created By</th>
+                            <th>Last Modified</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="instructionsTab" class="tab-content">
+            <div class="instructions">
+                <h3>Data Asset Documentation Guide</h3>
+                <p>This collaborative dashboard helps teams document and track data assets across different stages of the data lifecycle. Multiple users can simultaneously add, edit, and manage data assets with automatic saving.</p>
+                
+                <div class="instructions-grid">
+                    <div class="instruction-card">
+                        <h4>🚀 Getting Started</h4>
+                        <ul>
+                            <li>Enter your name in the user section to identify your contributions</li>
+                            <li>Select the appropriate environment (Non-Prod or AWS Cloud)</li>
+                            <li>Choose a workstream from the predefined list or create a new one</li>
+                            <li>Add data assets using the form controls</li>
+                        </ul>
+                    </div>
+
+                    <div class="instruction-card">
+                        <h4>📊 Data Stages Explained</h4>
+                        <ul>
+                            <li><strong>Raw Data:</strong> Unprocessed data directly from source systems (databases, APIs, files)</li>
+                            <li><strong>Standardized Data:</strong> Cleaned, validated, and transformed data following business rules</li>
+                            <li><strong>Curated Data:</strong> Analytics-ready data optimized for reporting and insights</li>
+                        </ul>
+                    </div>
+
+                    <div class="instruction-card">
+                        <h4>🏢 Workstream Categories</h4>
+                        <ul>
+                            <li><strong>Pre-Trade (Electronic Trading):</strong> Order management, market data, trading algorithms</li>
+                            <li><strong>Post-Trade (Front Arena):</strong> Trade settlement, confirmation, regulatory reporting</li>
+                            <li><strong>Sigma Post-Trade Operations:</strong> Operations workflow, exception handling</li>
+                            <li><strong>ARO Prime Services:</strong> Prime brokerage, client servicing, margin calculations</li>
+                            <li><strong>Market Risk:</strong> Risk metrics, VaR calculations, stress testing</li>
+                        </ul>
+                    </div>
+
+                    <div class="instruction-card">
+                        <h4>📈 Progress Calculation</h4>
+                        <ul>
+                            <li><strong>Total Assets:</strong> Count of all data assets across all workstreams and stages</li>
+                            <li><strong>Completed:</strong> Assets marked as complete using checkboxes</li>
+                            <li><strong>Progress %:</strong> (Completed Assets ÷ Total Assets) × 100</li>
+                            <li><strong>Workstreams:</strong> Number of unique workstream categories with assets</li>
+                        </ul>
+                    </div>
+
+                    <div class="instruction-card">
+                        <h4>🔄 Collaboration Features</h4>
+                        <ul>
+                            <li>Real-time collaborative editing with user identification</li>
+                            <li>Automatic data persistence in browser storage</li>
+                            <li>Track who added each asset and when</li>
+                            <li>Export data in CSV or JSON formats for external use</li>
+                        </ul>
+                    </div>
+
+                    <div class="instruction-card">
+                        <h4>💾 Data Management</h4>
+                        <ul>
+                            <li>Data automatically saves every 30 seconds</li>
+                            <li>Manual export options available in table view</li>
+                            <li>Data persists across browser sessions</li>
+                            <li>Environment-specific data isolation (Non-Prod vs AWS)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEnvironment = 'nonprod';
+        let currentUser = '';
+        let dataAssets = {
+            nonprod: {},
+            aws: {}
+        };
+        let autoSaveInterval;
+
+        // Initialize data from localStorage
+        function initializeData() {
+            const savedData = localStorage.getItem('absaDataAssets');
+            if (savedData) {
+                try {
+                    dataAssets = JSON.parse(savedData);
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                }
+            }
+            
+            // Initialize with sample data if no saved data exists
+            if (Object.keys(dataAssets.nonprod).length === 0) {
+                initializeSampleData();
+            }
+            
+            renderDashboard();
+            renderDataTable();
+            
+            // Set up auto-save
+            autoSaveInterval = setInterval(saveData, 30000); // Save every 30 seconds
+        }
+
+        function initializeSampleData() {
+            const sampleWorkstreams = [
+                'Pre-Trade (Electronic Trading)', 
+                'Post-Trade (Front Arena)', 
+                'Sigma Post-Trade Operations', 
+                'ARO Prime Services', 
+                'Market Risk'
+            ];
+
+            sampleWorkstreams.forEach(workstream => {
+                if (!dataAssets[currentEnvironment][workstream]) {
+                    dataAssets[currentEnvironment][workstream] = { raw: [], standardized: [], curated: [] };
+                }
+            });
+
+            // Add sample asset
+            if (dataAssets[currentEnvironment]['Pre-Trade (Electronic Trading)']) {
+                dataAssets[currentEnvironment]['Pre-Trade (Electronic Trading)']['raw'].push({
+                    name: 'Trade Orders',
+                    description: 'Raw trade order data from electronic trading systems',
+                    completed: false,
+                    id: Date.now(),
+                    createdBy: 'System',
+                    createdAt: new Date().toISOString(),
+                    lastModified: new Date().toISOString()
+                });
+            }
+        }
+
+        function setCurrentUser() {
+            const userName = document.getElementById('userNameInput').value.trim();
+            if (userName) {
+                currentUser = userName;
+                document.getElementById('currentUserName').textContent = userName;
+                document.getElementById('userIndicator').style.display = 'block';
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('absaDataAssets', JSON.stringify(dataAssets));
+                showSaveStatus('saved');
+            } catch (e) {
+                console.error('Error saving data:', e);
+                showSaveStatus('error');
+            }
+        }
+
+        function showSaveStatus(status) {
+            const indicator = document.getElementById('autoSaveIndicator');
+            indicator.className = 'auto-save-indicator';
+            
+            switch (status) {
+                case 'saving':
+                    indicator.className += ' saving';
+                    indicator.textContent = '💾 Saving...';
+                    break;
+                case 'saved':
+                    indicator.textContent = '✓ Data automatically saved';
+                    break;
+                case 'error':
+                    indicator.className += ' error';
+                    indicator.textContent = '⚠ Save failed';
+                    break;
+            }
+        }
+
+        function addDataAsset() {
+            const workstream = document.getElementById('workstreamInput').value.trim();
+            const assetName = document.getElementById('assetNameInput').value.trim();
+            const dataStage = document.getElementById('dataStageSelect').value;
+            const description = document.getElementById('descriptionInput').value.trim();
+
+            if (!workstream || !assetName) {
+                alert('Please enter both workstream and asset name');
+                return;
+            }
+
+            if (!currentUser) {
+                alert('Please enter your name to track contributions');
+                return;
+            }
+
+            if (!dataAssets[currentEnvironment][workstream]) {
+                dataAssets[currentEnvironment][workstream] = { raw: [], standardized: [], curated: [] };
+            }
+
+            const newAsset = {
+                name: assetName,
+                description: description || 'No description provided',
+                completed: false,
+                id: Date.now() + Math.random(),
+                createdBy: currentUser,
+                createdAt: new Date().toISOString(),
+                lastModified: new Date().toISOString()
+            };
+
+            dataAssets[currentEnvironment][workstream][dataStage].push(newAsset);
+
+            // Clear inputs
+            document.getElementById('workstreamInput').value = '';
+            document.getElementById('assetNameInput').value = '';
+            document.getElementById('descriptionInput').value = '';
+
+            showSaveStatus('saving');
+            saveData();
+            renderDashboard();
+            renderDataTable();
+        }
+
+        function toggleAssetCompletion(workstream, stage, assetId) {
+            const asset = dataAssets[currentEnvironment][workstream][stage].find(a => a.id === assetId);
+            if (asset) {
+                asset.completed = !asset.completed;
+                asset.lastModified = new Date().toISOString();
+                if (currentUser) {
+                    asset.lastModifiedBy = currentUser;
+                }
+                showSaveStatus('saving');
+                saveData();
+                renderDashboard();
+                renderDataTable();
+            }
+        }
+
+        function switchEnvironment(env) {
+            currentEnvironment = env;
+            
+            document.querySelectorAll('.env-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            renderDashboard();
+            renderDataTable();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+
+            if (tabName === 'table') {
+                renderDataTable();
+            }
+        }
+
+        // Complete the renderDashboard function (add this after the incomplete one)
+        function renderDashboard() {
+            const container = document.getElementById('swimLaneContainer');
+            const workstreams = Object.keys(dataAssets[currentEnvironment]);
+
+            // Clear existing content except headers
+            container.innerHTML = `
+                <div class="header-cell workstream-header">Workstream / Application</div>
+                <div class="header-cell data-stage-header">
+                    <div class="stage-icon raw-icon"></div>
+                    Raw Data
+                </div>
+                <div class="header-cell data-stage-header">
+                    <div class="stage-icon standardized-icon"></div>
+                    Standardized Data
+                </div>
+                <div class="header-cell data-stage-header">
+                    <div class="stage-icon curated-icon"></div>
+                    Curated Data
+                </div>
+            `;
+
+            if (workstreams.length === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.style.gridColumn = '1 / -1';
+                emptyState.style.padding = '40px';
+                emptyState.style.textAlign = 'center';
+                emptyState.style.color = '#6c757d';
+                emptyState.innerHTML = '<h3>No workstreams added yet</h3><p>Add your first data asset to get started</p>';
+                container.appendChild(emptyState);
+                updateStats();
+                return;
+            }
+
+            workstreams.forEach(workstream => {
+                // Workstream label
+                const workstreamLabel = document.createElement('div');
+                workstreamLabel.className = 'workstream-label';
+                workstreamLabel.textContent = workstream;
+                container.appendChild(workstreamLabel);
+
+                // Create swim lanes for each data stage
+                ['raw', 'standardized', 'curated'].forEach(stage => {
+                    const swimLane = document.createElement('div');
+                    swimLane.className = `swim-lane ${stage}`;
+                    
+                    const assets = dataAssets[currentEnvironment][workstream][stage] || [];
+                    
+                    assets.forEach(asset => {
+                        const assetDiv = document.createElement('div');
+                        assetDiv.className = `data-asset ${asset.completed ? 'completed' : ''}`;
+                        
+                        assetDiv.innerHTML = `
+                            <div class="asset-header">
+                                <input type="checkbox" class="asset-checkbox" ${asset.completed ? 'checked' : ''} 
+                                    onchange="toggleAssetCompletion('${workstream}', '${stage}', ${asset.id})">
+                                <div class="asset-name">${asset.name}</div>
+                            </div>
+                            <div class="asset-details">${asset.description}</div>
+                            <div class="asset-meta">
+                                Created by: ${asset.createdBy} | ${new Date(asset.createdAt).toLocaleDateString()}
+                                ${asset.lastModifiedBy ? ` | Modified by: ${asset.lastModifiedBy}` : ''}
+                            </div>
+                        `;
+                        
+                        swimLane.appendChild(assetDiv);
+                    });
+
+                    // Add "Add Asset" button
+                    const addButton = document.createElement('button');
+                    addButton.className = 'add-asset-btn';
+                    addButton.textContent = `+ Add ${stage.charAt(0).toUpperCase() + stage.slice(1)} Asset`;
+                    addButton.onclick = () => quickAddAsset(workstream, stage);
+                    swimLane.appendChild(addButton);
+
+                    container.appendChild(swimLane);
+                });
+            });
+
+            updateStats();
+        }
+
+        // Quick add asset function
+        function quickAddAsset(workstream, stage) {
+            const assetName = prompt(`Enter name for new ${stage} asset in ${workstream}:`);
+            if (assetName && assetName.trim()) {
+                if (!currentUser) {
+                    alert('Please enter your name first to track contributions');
+                    return;
+                }
+
+                const newAsset = {
+                    name: assetName.trim(),
+                    description: 'Added via quick add',
+                    completed: false,
+                    id: Date.now() + Math.random(),
+                    createdBy: currentUser,
+                    createdAt: new Date().toISOString(),
+                    lastModified: new Date().toISOString()
+                };
+
+                dataAssets[currentEnvironment][workstream][stage].push(newAsset);
+                showSaveStatus('saving');
+                saveData();
+                renderDashboard();
+                renderDataTable();
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            let totalAssets = 0;
+            let completedAssets = 0;
+            const workstreams = Object.keys(dataAssets[currentEnvironment]);
+
+            workstreams.forEach(workstream => {
+                ['raw', 'standardized', 'curated'].forEach(stage => {
+                    const assets = dataAssets[currentEnvironment][workstream][stage] || [];
+                    totalAssets += assets.length;
+                    completedAssets += assets.filter(asset => asset.completed).length;
+                });
+            });
+
+            document.getElementById('totalAssets').textContent = totalAssets;
+            document.getElementById('completedAssets').textContent = completedAssets;
+            document.getElementById('workstreamsCount').textContent = workstreams.length;
+            document.getElementById('progressPercent').textContent = 
+                totalAssets > 0 ? Math.round((completedAssets / totalAssets) * 100) + '%' : '0%';
+        }
+
+        // Render data table
+        function renderDataTable() {
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+
+            Object.keys(dataAssets).forEach(env => {
+                Object.keys(dataAssets[env]).forEach(workstream => {
+                    ['raw', 'standardized', 'curated'].forEach(stage => {
+                        const assets = dataAssets[env][workstream][stage] || [];
+                        assets.forEach(asset => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${env.toUpperCase()}</td>
+                                <td>${workstream}</td>
+                                <td>${asset.name}</td>
+                                <td><span style="text-transform: capitalize;">${stage}</span></td>
+                                <td>${asset.description}</td>
+                                <td><span class="status-badge ${asset.completed ? 'status-complete' : 'status-pending'}">
+                                    ${asset.completed ? 'Complete' : 'Pending'}
+                                </span></td>
+                                <td>${asset.createdBy}</td>
+                                <td>${new Date(asset.lastModified).toLocaleDateString()}</td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    });
+                });
+            });
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const headers = ['Environment', 'Workstream', 'Asset Name', 'Data Stage', 'Description', 'Status', 'Created By', 'Last Modified'];
+            let csvContent = headers.join(',') + '\n';
+
+            Object.keys(dataAssets).forEach(env => {
+                Object.keys(dataAssets[env]).forEach(workstream => {
+                    ['raw', 'standardized', 'curated'].forEach(stage => {
+                        const assets = dataAssets[env][workstream][stage] || [];
+                        assets.forEach(asset => {
+                            const row = [
+                                env.toUpperCase(),
+                                `"${workstream}"`,
+                                `"${asset.name}"`,
+                                stage.charAt(0).toUpperCase() + stage.slice(1),
+                                `"${asset.description}"`,
+                                asset.completed ? 'Complete' : 'Pending',
+                                asset.createdBy,
+                                new Date(asset.lastModified).toLocaleDateString()
+                            ];
+                            csvContent += row.join(',') + '\n';
+                        });
+                    });
+                });
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `absa-data-assets-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Export to JSON
+        function exportToJSON() {
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                environments: dataAssets
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `absa-data-assets-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            
+            // Set up workstream input with autocomplete
+            const workstreamInput = document.getElementById('workstreamInput');
+            const predefinedWorkstreams = [
+                'Pre-Trade (Electronic Trading)',
+                'Post-Trade (Front Arena)', 
+                'Sigma Post-Trade Operations',
+                'ARO Prime Services',
+                'Market Risk'
+            ];
+            
+            // Add datalist for autocomplete
+            const datalist = document.createElement('datalist');
+            datalist.id = 'workstreams';
+            predefinedWorkstreams.forEach(ws => {
+                const option = document.createElement('option');
+                option.value = ws;
+                datalist.appendChild(option);
+            });
+            document.body.appendChild(datalist);
+            workstreamInput.setAttribute('list', 'workstreams');
+        });
+
+        // Add cleanup when page unloads
+        window.addEventListener('beforeunload', function() {
+        if (autoSaveInterval) {
+            clearInterval(autoSaveInterval);
+        }
+        saveData(); // Final save before leaving
+    });
+    </script>
+</body>
+</html>
